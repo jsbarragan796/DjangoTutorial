@@ -1,0 +1,35 @@
+{% load bootstrap3 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cambio de contraseña</title>
+</head>
+<body>
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<div class="col-md-6 col-sm-offset-3">
+    <div class="page-header">
+        <h2>Cambio de contraseña</h2>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        {%  bootstrap_form form %}
+        {% buttons %}
+            <button type="submit" class="btn btn-primary" >Guardar cambios</button>
+            <a href="{% url 'images:index' %}" class="btn btn-primary" >Cancelar</a>
+        {% endbuttons %}
+    </form>
+</div>
+</body>
+</html>

@@ -2,16 +2,18 @@
 from __future__ import unicode_literals
 
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 
+from django.core.files.storage import FileSystemStorage
+
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 
-from .models import Imagen
+from .models import Imagen, User
 from .forms import ImageFrom, UserForm, UserUpdateForm, UserChangePassword
+
 
 # Create your views here.
 def index(request):
@@ -40,6 +42,7 @@ def add_image(request):
         form = ImageFrom()
     return render(request, 'poll/image_form.html', {'form': form})
 
+
 def update_image(request):
     if request.method == 'POST':
         form = ImageFrom(request.POST, request.FILES)
@@ -57,7 +60,6 @@ def update_image(request):
     return render(request, 'poll/image_form.html', {'form': form})
 
 
-
 def user_registration_view(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
@@ -68,11 +70,21 @@ def user_registration_view(request):
             last_name = cleaned_data.get('last_name')
             password = cleaned_data.get('password')
             email = cleaned_data.get('email')
-
+            ciudad = cleaned_data.get('ciudad')
+            direccion = cleaned_data.get('direccion')
+            pais = cleaned_data.get('pais')
             user_model = User.objects.create_user(username=username, password=password)
             user_model.first_name = first_name
             user_model.last_name = last_name
             user_model.email = email
+            user_model.ciudad = ciudad
+            user_model.direccion = direccion
+            user_model.pais = pais
+            if request.FILES.has_key('foto'):
+                user_model.foto = request.FILES['foto']
+            else:
+                user_model.foto = 'images/user.png'
+
             user_model.save()
 
             return HttpResponseRedirect(reverse('images:index'))
@@ -91,12 +103,12 @@ def login_view(request):
         user = authenticate(username=username, password=password)
 
         if user is not None:
-            login(request,user)
+            login(request, user)
             return redirect(reverse('images:index'))
         else:
             mensaje = 'Nombre de usuario o clave no valido'
 
-    return render(request,'poll/login.html',{'mensaje': mensaje})
+    return render(request, 'poll/login.html', {'mensaje': mensaje})
 
 
 def logout_view(request):
@@ -111,19 +123,31 @@ def perfil(request):
     else:
         return index(request)
 
+
 def perfil_actualizar(request):
     user_model = User.objects.get(pk=request.user.pk)
     if request.method == 'POST':
-        form = UserUpdateForm(request.POST, instance=user_model)
+        form = UserUpdateForm(request.POST, request.FILES, instance=user_model)
         form.pk_user = request.user.pk
         if form.is_valid():
             cleaned_data = form.cleaned_data
             first_name = cleaned_data.get('first_name')
             last_name = cleaned_data.get('last_name')
             email = cleaned_data.get('email')
+            ciudad = cleaned_data.get('ciudad')
+            direccion = cleaned_data.get('direccion')
+            foto = cleaned_data.get('foto')
+            pais = cleaned_data.get('pais')
             user_model.first_name = first_name
             user_model.last_name = last_name
             user_model.email = email
+            user_model.ciudad = ciudad
+            user_model.direccion = direccion
+            user_model.pais = pais
+            if request.FILES.has_key('foto'):
+                user_model.foto = request.FILES['foto']
+            else:
+                user_model.foto = 'images/user.png'
             user_model.save()
 
             return HttpResponseRedirect(reverse('images:index'))

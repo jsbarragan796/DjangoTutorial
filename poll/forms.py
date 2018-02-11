@@ -3,11 +3,11 @@
 from __future__ import unicode_literals
 
 from django.forms import ModelForm
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import forms
 from django.contrib.auth.forms import PasswordChangeForm
-from .models import Imagen
+from .models import Imagen, User
 from django.contrib.auth import password_validation
+
 
 # Create your models here.
 
@@ -19,16 +19,18 @@ class ImageFrom(ModelForm):
 
 
 class UserForm(ModelForm):
-    username = forms.CharField(label="Nombre de Usuario",max_length=50)
+    username = forms.CharField(label="Usuario", max_length=20)
     first_name = forms.CharField(label="Nombres",max_length=20)
     last_name = forms.CharField(label="Apellidos",max_length=20)
     email = forms.EmailField(label="Correo electronico")
     password = forms.CharField(label="Nueva Contraseña",widget=forms.PasswordInput())
     password2 = forms.CharField(label="Nueva Contraseña",widget=forms.PasswordInput())
+    foto = forms.ImageField(required=False)
+
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'last_name', 'first_name', 'password', 'password2']
+        fields = ['username', 'last_name', 'first_name','foto', 'pais' , 'ciudad' , 'direccion','email', 'password', 'password2']
 
     def clean_username(self):
         username = self.cleaned_data['username']
@@ -56,11 +58,15 @@ class UserUpdateForm(ModelForm):
     first_name = forms.CharField(label="Nombres", max_length=20)
     last_name = forms.CharField(label="Apellidos", max_length=20)
     email = forms.EmailField(label="Correo electrónico")
+    foto = forms.ImageField(required=False)
+    pais = forms.CharField()
+    ciudad = forms.CharField(max_length=20)
+    direccion = forms.CharField(max_length=50)
 
 
     class Meta:
         model = User
-        fields = ['email', 'last_name', 'first_name']
+        fields = ['last_name', 'first_name', 'pais', 'ciudad', 'direccion', 'email', 'foto']
 
 
     def clean_email(self):

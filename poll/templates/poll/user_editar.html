@@ -19,7 +19,7 @@
         <div class="page-header">
             <h2>Perfil</h2>
         </div>
-        <form method="post" action="{% url 'images:perfilActualizar' %}" >
+        <form method="post" enctype="multipart/form-data" action="{% url 'images:perfilActualizar' %}" >
             {% csrf_token %}
             {%  bootstrap_form form %}
             {% buttons %}

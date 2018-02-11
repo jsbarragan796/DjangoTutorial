@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_countries',
     'poll',
     'bootstrap3',
 
@@ -80,7 +81,7 @@ WSGI_APPLICATION = 'untitled4.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'galeria',
+        'NAME': 'tutorial',
         'USER':'root',
         'PASSWORD':'',
         'HOST':'127.0.0.1',
@@ -128,3 +129,4 @@ USE_TZ = True
 STATIC_URL = '/images/'
 STATIC_ROOT = '/staticfiles/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'images'),)
+AUTH_USER_MODEL = 'poll.User'
